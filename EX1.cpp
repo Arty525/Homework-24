@@ -4,63 +4,54 @@
 #include <fstream>
 #include <string>
 
-void endTask(std::time_t start, std::time_t end, std::string name) {
-	double dif = std::difftime(end, start);
-	std::ofstream taskList("C:\\Users\\newar\\Desktop\\list.txt", std::ios::app);
-	taskList << name << " start time: " << start << ", end time: " << end << ", spent time: " << dif << std::endl;
-	taskList.close();
-}
-
-void list() {
-	std::ifstream taskList("C:\\Users\\newar\\Desktop\\list.txt");
-	std::string task;
-	if (taskList.peek() != EOF) {
-		std::cout << "Completed tasks: " << std::endl;
-	}
-	while (std::getline(taskList, task)) {
-		std::cout << task << std::endl;
-	}
-	taskList.close();
-}
-
-int main() {
-	std::time_t startTime = 0;
-	std::time_t endTime;
+int main(){
 	std::string command;
-	std::string taskName;
+    std::time_t start = 0;
+    std::time_t end;
+    std::fstream taskList;
+    std::string taskName;
 
-	do {
-		std::cout << "Enter command: ";
-		std::cin >> command;
-		if (command == "begin") {
-			if (startTime > 0) {
-				endTime = std::time(nullptr);
-				endTask(startTime, endTime, taskName);
-				taskName.clear();
-			}
-			startTime = std::time(nullptr);
-			std::cout << "Enter task name: ";
-			std::cin >> taskName;
-			std::cout << "Task \"" << taskName << "\" started. Time: " << startTime << std::endl;
-		}
-		else if (command == "end") {
-			endTime = std::time(nullptr);
-			endTask(startTime, endTime, taskName);
-			taskName.clear();
-			startTime = 0;
-		}
-		else if (command == "status") {
-			list();
-			if (!taskName.empty()) {
-				std::cout << "Current task:" << std::endl;
-				std::cout << taskName << " started at " << startTime << std::endl;
-			}
-		}
-		else if (command == "exit") {
-			return 0;
-		}
-		else {
-			std::cout << "UNKOWN COMMAND" << std::endl;
-		}
-	} while (command != "exit");
+    do {
+        std::cout << "Command: ";
+        std::cin >> command;
+        if (command == "begin") {
+            if (start != 0) {
+                end = std::time(nullptr);
+                std::tm* endLocal = std::localtime(&end);
+                double dif = std::difftime((std::time_t)end, (std::time_t)start);
+                taskList.open("C://users//newar//Desktop//list.txt", std::ios::app);
+                taskList << "end: " << std::put_time(endLocal, "%d.%m.%Y %H:%M:%S") << " time spent: " << (int)dif / 3600 << ":" << (int)dif / 60 << ":" << (int)dif << std::endl;
+                std::cout << taskName << " end: " << std::put_time(endLocal, "%d.%m.%Y %H:%M:%S") << " time spent: " << (int)dif / 3600 << ":" << (int)dif / 60 << ":" << (int)dif << std::endl;
+                taskList.close();
+                start = 0;
+            }
+            std::cout << "Task name: ";
+            std::cin >> taskName;
+            start = std::time(nullptr);
+            std::tm* startLocal = std::localtime(&start);
+            taskList.open("C://users//newar//Desktop//list.txt", std::ios::app);
+            taskList << taskName << " start: " << std::put_time(startLocal, "%d.%m.%Y %H:%M:%S") << " ";
+            std::cout << taskName << " start: " << std::put_time(startLocal, "%d.%m.%Y %H:%M:%S") << std::endl;
+            taskList.close();
+        }
+        else if (command == "end") {
+            end = std::time(nullptr);
+            std::tm* endLocal = std::localtime(&end);
+            double dif = std::difftime((std::time_t)end, (std::time_t)start);
+            taskList.open("C://users//newar//Desktop//list.txt", std::ios::app);
+            taskList << "end: " << std::put_time(endLocal, "%d.%m.%Y %H:%M:%S") << " time spent: " << (int)dif/3600 << ":" << (int)dif/60 << ":" << (int)dif << std::endl;
+            std::cout << taskName << " end: " << std::put_time(endLocal, "%d.%m.%Y %H:%M:%S") << " time spent: " << (int)dif / 3600 << ":" << (int)dif / 60 << ":" << (int)dif << std::endl;
+            taskList.close();
+            start = 0;
+        }
+        else if (command == "status") {
+            std::string line;
+            taskList.open("C://users//newar//Desktop//list.txt");
+            while (!taskList.eof()) {
+                std::getline(taskList, line);
+                std::cout << line << std::endl;
+            }
+        }
+    } while (command != "exit");
+    return 0;
 }
