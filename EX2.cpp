@@ -58,7 +58,7 @@ int main() {
 					std::cout << nearBd[j].name << " " << std::put_time(&nearBd[j].b, "%d.%m") << std::endl;
 				}
 				if (nearBd[0].b.tm_mon == local->tm_mon && nearBd[0].b.tm_mday == local->tm_mday) {
-					std::cout << "Don't forget to say hello today!" << std::endl;
+					std::cout << "Don't forget congratulate today!" << std::endl;
 				}
 			}
 		}
