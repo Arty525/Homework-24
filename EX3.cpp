@@ -1,6 +1,4 @@
 ﻿#include <iostream>
-#include <string>
-#include <ctime>
 #include <iomanip>
 #include <dos.h>
 
